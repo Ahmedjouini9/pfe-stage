@@ -1,0 +1,48 @@
+.sidebar {
+    width:25% ;
+    height: calc(100vh - 50px);
+    overflow-y: scroll;
+  
+  }
+  
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgb(80, 50, 50);
+  }
+  
+  .sidebarWrapper {
+    padding: 20px;
+  }
+  .blog-sidebar-list{
+    color: #242424;
+    font-family: 'Kanit',sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+  }
+  
+  .blog-sidebar-text{
+    color: #242424;
+    font-family: 'Kanit',sans-serif;
+    font-size: 16px;
+    font-weight: 200;
+  }
+  .list-icon{
+
+    color: #c0aa83;
+  
+  }
+  .blog-sidebar-title{
+    color: #242424;
+    font-family: 'Kanit',sans-serif;
+    font-size: 25px;
+    font-weight: 900;
+  }
+  
+
+  
+  
