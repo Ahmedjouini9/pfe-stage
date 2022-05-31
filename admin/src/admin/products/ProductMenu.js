@@ -1,9 +1,11 @@
 import React, { Fragment, useContext } from "react";
+import { ProductContext } from "./index";
 import AddProductModal from "./AddProductModal";
-import EditProductModal from "./UpdateCompanyModal";
+import EditProductModal from "./EditProductModal";
 
-const companyMenu = (props) => {
-    return (
+const ProductMenu = (props) => {
+  const { dispatch } = useContext(ProductContext);
+  return (
     <Fragment>
       <div className="col-span-1 flex justify-between items-center">
         <div className="flex items-center">

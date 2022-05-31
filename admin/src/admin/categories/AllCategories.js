@@ -5,9 +5,9 @@ import moment from "moment";
 
 const apiURL = process.env.REACT_APP_API_URL;
 
-const AllClient = (props) => {
-  const { loading, error } = useSelector((state)=>({...state.auth}));
-
+const AllCategory = (props) => {
+  const { data, dispatch } = useContext(CategoryContext);
+  const { categories, loading } = data;
 
   useEffect(() => {
     fetchData();
@@ -15,7 +15,18 @@ const AllClient = (props) => {
   }, []);
 
   const fetchData = async () => {
-    dispatch(getUsers())
+    dispatch({ type: "loading", payload: true });
+    let responseData = await getAllCategory();
+    setTimeout(() => {
+      if (responseData && responseData.Categories) {
+        dispatch({
+          type: "fetchCategoryAndChangeState",
+          payload: responseData.Categories,
+        });
+        dispatch({ type: "loading", payload: false });
+      }
+    }, 1000);
+  };
 
   const deleteCategoryReq = async (cId) => {
     let deleteC = await deleteCategory(cId);
@@ -196,6 +207,5 @@ const CategoryTable = ({ category, deleteCat, editCat }) => {
     </Fragment>
   );
 };
-}
 
-export default AllClient;
+export default AllCategory;

@@ -43,8 +43,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.use("/user",require('./routes/usersRouter'))
-app.use("/company",require('./routes/companysRouter'))
-app.use("/posts", require('./routes/postsRouter'));
+app.use("/product",require('./routes/companysRouter'))
 app.use("/conversation", require('./routes/conversationRouter'));
 app.use("/message", require('./routes/messageRouter'));
 

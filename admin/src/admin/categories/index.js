@@ -1,7 +1,7 @@
 import React, { Fragment, createContext, useReducer } from "react";
 import AdminLayout from "../layout";
-import CategoryMenu from "./ClientMenu";
-import AllCategories from "./AllClients";
+import CategoryMenu from "./CategoryMenu";
+import AllCategories from "./AllCategories";
 import { categoryState, categoryReducer } from "./CategoryContext";
 
 /* This context manage all of the caregories component's data */

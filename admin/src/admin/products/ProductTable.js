@@ -1,61 +1,54 @@
-import React, { Fragment, useEffect, useState } from "react";
-import { getCompanys, deleteCompany } from "../../redux/features/companySlice";
+import React, { Fragment, useContext, useEffect, useState } from "react";
+import { getAllProduct, deleteProduct } from "./FetchApi";
 import moment from "moment";
-import { toast } from "react-toastify";
-import {useSelector , useDispatch} from 'react-redux'
-import { updateCompany } from "../../redux/api";
+import { ProductContext } from "./index";
 
-const initialState ={
-    name : "",
-    phone : "",
-    address : "",
-    description : "",
-    name : "",
-    name : "",
-    name : "",
-    name : "",
-}
+const apiURL = process.env.REACT_APP_API_URL;
 
-const AllCompany = () => {
-  const { Companys , loading , error } = useSelector((state)=>({...state.Company}));
-  const [companyData, setCompanyData] = useState(initialState)
-  const {name , description , } = companyData
-  const { id } = useParams()
+const AllProduct = (props) => {
+  const { data, dispatch } = useContext(ProductContext);
+  const { products } = data;
 
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-error && toast.error(error)    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [error]);
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-
-useEffect(()=>{
-  getAllCompany()
-},[])
-
-  const handleSubmit = e => {
-    e.preventdefault    
-    dispatch(deleteCompany(id,companyData,toast))
+  const fetchData = async () => {
+    setLoading(true);
+    let responseData = await getAllProduct();
+    setTimeout(() => {
+      if (responseData && responseData.Products) {
+        dispatch({
+          type: "fetchProductsAndChangeState",
+          payload: responseData.Products,
+        });
+        setLoading(false);
+      }
+    }, 1000);
   };
 
-  const getAllCompany = e => {
-    e.preventdefault    
-    dispatch(getCompanys)
-  };
-
-  const handleDelete =  e => {
-    e.preventdefault()
-    if (window.confirm("Are you sure you want to delete this tour ?")) {
-    dispatch(deleteCompany(id))
+  const deleteProductReq = async (pId) => {
+    let deleteC = await deleteProduct(pId);
+    if (deleteC.error) {
+      console.log(deleteC.error);
+    } else if (deleteC.success) {
+      console.log(deleteC.success);
+      fetchData();
     }
   };
 
-  const handleUpdate = e =>{
-    e.preventdefault()
-    dispatch(updateCompany(companyData,id))
-  }
-
-  /* This method call the editmodal & dispatch company context */
-
+  /* This method call the editmodal & dispatch product context */
+  const editProduct = (pId, product, type) => {
+    if (type) {
+      dispatch({
+        type: "editProductModalOpen",
+        product: { ...product, pId: pId },
+      });
+    }
+  };
 
   if (loading) {
     return (
@@ -84,25 +77,28 @@ useEffect(()=>{
         <table className="table-auto border w-full my-2">
           <thead>
             <tr>
-              <th className="px-4 py-2 border">Company</th>
-              <th className="px-4 py-2 border">Logo</th>
-              <th className="px-4 py-2 border">pay</th>
-              <th className="px-4 py-2 border">domaine</th>
+              <th className="px-4 py-2 border">Product</th>
+              <th className="px-4 py-2 border">Description</th>
+              <th className="px-4 py-2 border">Image</th>
+              <th className="px-4 py-2 border">Status</th>
+              <th className="px-4 py-2 border">Stock</th>
+              <th className="px-4 py-2 border">Category</th>
+              <th className="px-4 py-2 border">Offer</th>
               <th className="px-4 py-2 border">Created at</th>
               <th className="px-4 py-2 border">Updated at</th>
               <th className="px-4 py-2 border">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {Companys && Companys.length > 0 ? (
-              Companys.map((item, key) => {
+            {products && products.length > 0 ? (
+              products.map((item, key) => {
                 return (
-                  <companyTable
-                    Company={item}
-                    editCompany={(id, Company) =>
-                      handleUpdate(id, Company)
+                  <ProductTable
+                    product={item}
+                    editProduct={(pId, product, type) =>
+                      editProduct(pId, product, type)
                     }
-                    deleteCompany={(id) => handleDelete(id)}
+                    deleteProduct={(pId) => deleteProductReq(pId)}
                     key={key}
                   />
                 );
@@ -113,63 +109,63 @@ useEffect(()=>{
                   colSpan="10"
                   className="text-xl text-center font-semibold py-8"
                 >
-                  No company found
+                  No product found
                 </td>
               </tr>
             )}
           </tbody>
         </table>
         <div className="text-sm text-gray-600 mt-2">
-          Total {Companys && Companys.length} company found
+          Total {products && products.length} product found
         </div>
       </div>
     </Fragment>
   );
 };
 
-/* Single company Component */
-const CompanyTable = ({ company, handleDelete, handleUpdate }) => {
+/* Single Product Component */
+const ProductTable = ({ product, deleteProduct, editProduct }) => {
   return (
     <Fragment>
       <tr>
         <td className="p-2 text-left">
-          {company.name.length > 15
-            ? company.description.substring(1, 15) + "..."
-            : company.name}
+          {product.pName.length > 15
+            ? product.pDescription.substring(1, 15) + "..."
+            : product.pName}
         </td>
         <td className="p-2 text-left">
-          {company.description.slice(0, 15)}...
+          {product.pDescription.slice(0, 15)}...
         </td>
         <td className="p-2 text-center">
           <img
             className="w-12 h-12 object-cover object-center"
-            src={`${apiURL}/uploads/companys/${company.images[0]}`}
+            src={`${apiURL}/uploads/products/${product.pImages[0]}`}
             alt="pic"
           />
         </td>
         <td className="p-2 text-center">
-          {company.pStatus === "Active" ? (
+          {product.pStatus === "Active" ? (
             <span className="bg-green-200 rounded-full text-center text-xs px-2 font-semibold">
-              {company.pStatus}
+              {product.pStatus}
             </span>
           ) : (
             <span className="bg-red-200 rounded-full text-center text-xs px-2 font-semibold">
-              {company.pStatus}
+              {product.pStatus}
             </span>
           )}
         </td>
-        <td className="p-2 text-center">{company.pQuantity}</td>
-        <td className="p-2 text-center">{company.pCategory.cName}</td>
-        <td className="p-2 text-center">{company.pOffer}</td>
+        <td className="p-2 text-center">{product.pQuantity}</td>
+        <td className="p-2 text-center">{product.pCategory.cName}</td>
+        <td className="p-2 text-center">{product.pOffer}</td>
         <td className="p-2 text-center">
-          {moment(company.createdAt).format("lll")}
+          {moment(product.createdAt).format("lll")}
         </td>
         <td className="p-2 text-center">
-          {moment(company.updatedAt).format("lll")}
+          {moment(product.updatedAt).format("lll")}
         </td>
         <td className="p-2 flex items-center justify-center">
           <span
-            onClick={(e) => handleUpdate(company._id, company, true)}
+            onClick={(e) => editProduct(product._id, product, true)}
             className="cursor-pointer hover:bg-gray-200 rounded-lg p-2 mx-1"
           >
             <svg
@@ -187,7 +183,7 @@ const CompanyTable = ({ company, handleDelete, handleUpdate }) => {
             </svg>
           </span>
           <span
-            onClick={(e) => handleDelete(company._id)}
+            onClick={(e) => deleteProduct(product._id)}
             className="cursor-pointer hover:bg-gray-200 rounded-lg p-2 mx-1"
           >
             <svg
@@ -209,4 +205,4 @@ const CompanyTable = ({ company, handleDelete, handleUpdate }) => {
   );
 };
 
-export default AllCompany;
+export default AllProduct;

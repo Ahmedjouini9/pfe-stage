@@ -1,87 +1,87 @@
 import React, { Fragment, useContext, useState, useEffect } from "react";
 import { ProductContext } from "./index";
-import { editProduct, getAllProduct } from "./FetchApi";
+import { createProduct, getAllProduct } from "./FetchApi";
 import { getAllCategory } from "../categories/FetchApi";
 
+const AddProductDetail = ({ categories }) => {
+  const { data, dispatch } = useContext(ProductContext);
 
+  const alert = (msg, type) => (
+    <div className={`bg-${type}-200 py-2 px-4 w-full`}>{msg}</div>
+  );
 
-const initialState={
-  firstName : "",
-  lastName : "",
-  email : "",
-  address : "",
-  phoneNumber : "",
-  image : "",
-  password : "",
-}
-
-
-const EditCompanyModal = (props) => {
-  const { loading, error } = useSelector((state)=>({...state.Company}));
-  const {id} = useParams()
-  const [categories, setCategories] = useState(null);
-
-
-  const [editformData, setEditformdata] = useState(initialState);
-
-  useEffect(() => {
-    getAllCompanys();
-  }, []);
-
-  const getAllCompanys = e => {
-    e.preventDefault()    
-    dispatch(getCompanys)
-  };
-
-  useEffect(() => {
-    setEditformdata({
-      pId: data.editProductModal.pId,
-      pName: data.editProductModal.pName,
-      pDescription: data.editProductModal.pDescription,
-      pImages: data.editProductModal.pImages,
-      pStatus: data.editProductModal.pStatus,
-      pCategory: data.editProductModal.pCategory,
-      pQuantity: data.editProductModal.pQuantity,
-      pPrice: data.editProductModal.pPrice,
-      pOffer: data.editProductModal.pOffer,
-    });
-  }, [data.editProductModal]);
+  const [fData, setFdata] = useState({
+    pName: "",
+    pDescription: "",
+    pStatus: "Active",
+    pImage: null, // Initial value will be null or empty array
+    pCategory: "",
+    pPrice: "",
+    pOffer: 0,
+    pQuantity: "",
+    success: false,
+    error: false,
+  });
 
   const fetchData = async () => {
     let responseData = await getAllProduct();
-    if (responseData && responseData.Products) {
-      dispatch({
-        type: "fetchProductsAndChangeState",
-        payload: responseData.Products,
-      });
-    }
+    setTimeout(() => {
+      if (responseData && responseData.Products) {
+        dispatch({
+          type: "fetchProductsAndChangeState",
+          payload: responseData.Products,
+        });
+      }
+    }, 1000);
   };
 
   const submitForm = async (e) => {
     e.preventDefault();
-    if (!editformData.pEditImages) {
-      console.log("Image Not upload=============", editformData);
-    } else {
-      console.log("Image uploading");
+    e.target.reset();
+
+    if (!fData.pImage) {
+      setFdata({ ...fData, error: "Please upload at least 2 image" });
+      setTimeout(() => {
+        setFdata({ ...fData, error: false });
+      }, 2000);
     }
+
     try {
-      let responseData = await editProduct(editformData);
+      let responseData = await createProduct(fData);
       if (responseData.success) {
         fetchData();
-        setEditformdata({ ...editformData, success: responseData.success });
+        setFdata({
+          ...fData,
+          pName: "",
+          pDescription: "",
+          pImage: "",
+          pStatus: "Active",
+          pCategory: "",
+          pPrice: "",
+          pQuantity: "",
+          pOffer: 0,
+          success: responseData.success,
+          error: false,
+        });
         setTimeout(() => {
-          return setEditformdata({
-            ...editformData,
-            success: responseData.success,
+          setFdata({
+            ...fData,
+            pName: "",
+            pDescription: "",
+            pImage: "",
+            pStatus: "Active",
+            pCategory: "",
+            pPrice: "",
+            pQuantity: "",
+            pOffer: 0,
+            success: false,
+            error: false,
           });
         }, 2000);
       } else if (responseData.error) {
-        setEditformdata({ ...editformData, error: responseData.error });
+        setFdata({ ...fData, success: false, error: responseData.error });
         setTimeout(() => {
-          return setEditformdata({
-            ...editformData,
-            error: responseData.error,
-          });
+          return setFdata({ ...fData, error: false, success: false });
         }, 2000);
       }
     } catch (error) {
@@ -93,11 +93,9 @@ const EditCompanyModal = (props) => {
     <Fragment>
       {/* Black Overlay */}
       <div
-        onClick={(e) =>
-          dispatch({ type: "editProductModalClose", payload: false })
-        }
+        onClick={(e) => dispatch({ type: "addProductModal", payload: false })}
         className={`${
-          data.editProductModal.modal ? "" : "hidden"
+          data.addProductModal ? "" : "hidden"
         } fixed top-0 left-0 z-30 w-full h-full bg-black opacity-50`}
       />
       {/* End Black Overlay */}
@@ -105,19 +103,19 @@ const EditCompanyModal = (props) => {
       {/* Modal Start */}
       <div
         className={`${
-          data.editProductModal.modal ? "" : "hidden"
+          data.addProductModal ? "" : "hidden"
         } fixed inset-0 flex items-center z-30 justify-center overflow-auto`}
       >
         <div className="mt-32 md:mt-0 relative bg-white w-11/12 md:w-3/6 shadow-lg flex flex-col items-center space-y-4 px-4 py-4 md:px-8">
           <div className="flex items-center justify-between w-full pt-4">
             <span className="text-left font-semibold text-2xl tracking-wider">
-              Edit Product
+              Add Product
             </span>
             {/* Close Modal */}
             <span
               style={{ background: "#303031" }}
               onClick={(e) =>
-                dispatch({ type: "editProductModalClose", payload: false })
+                dispatch({ type: "addProductModal", payload: false })
               }
               className="cursor-pointer text-gray-100 py-2 px-2 rounded-full"
             >
@@ -137,17 +135,17 @@ const EditCompanyModal = (props) => {
               </svg>
             </span>
           </div>
-          {editformData.error ? alert(editformData.error, "red") : ""}
-          {editformData.success ? alert(editformData.success, "green") : ""}
+          {fData.error ? alert(fData.error, "red") : ""}
+          {fData.success ? alert(fData.success, "green") : ""}
           <form className="w-full" onSubmit={(e) => submitForm(e)}>
             <div className="flex space-x-1 py-4">
               <div className="w-1/2 flex flex-col space-y-1 space-x-1">
                 <label htmlFor="name">Product Name *</label>
                 <input
-                  value={editformData.pName}
+                  value={fData.pName}
                   onChange={(e) =>
-                    setEditformdata({
-                      ...editformData,
+                    setFdata({
+                      ...fData,
                       error: false,
                       success: false,
                       pName: e.target.value,
@@ -160,10 +158,10 @@ const EditCompanyModal = (props) => {
               <div className="w-1/2 flex flex-col space-y-1 space-x-1">
                 <label htmlFor="price">Product Price *</label>
                 <input
-                  value={editformData.pPrice}
+                  value={fData.pPrice}
                   onChange={(e) =>
-                    setEditformdata({
-                      ...editformData,
+                    setFdata({
+                      ...fData,
                       error: false,
                       success: false,
                       pPrice: e.target.value,
@@ -178,10 +176,10 @@ const EditCompanyModal = (props) => {
             <div className="flex flex-col space-y-2">
               <label htmlFor="description">Product Description *</label>
               <textarea
-                value={editformData.pDescription}
+                value={fData.pDescription}
                 onChange={(e) =>
-                  setEditformdata({
-                    ...editformData,
+                  setFdata({
+                    ...fData,
                     error: false,
                     success: false,
                     pDescription: e.target.value,
@@ -197,30 +195,14 @@ const EditCompanyModal = (props) => {
             {/* Most Important part for uploading multiple image */}
             <div className="flex flex-col mt-4">
               <label htmlFor="image">Product Images *</label>
-              {editformData.pImages ? (
-                <div className="flex space-x-1">
-                  <img
-                    className="h-16 w-16 object-cover"
-                    src={`${apiURL}/uploads/products/${editformData.pImages[0]}`}
-                    alt="productImage"
-                  />
-                  <img
-                    className="h-16 w-16 object-cover"
-                    src={`${apiURL}/uploads/products/${editformData.pImages[1]}`}
-                    alt="productImage"
-                  />
-                </div>
-              ) : (
-                ""
-              )}
               <span className="text-gray-600 text-xs">Must need 2 images</span>
               <input
                 onChange={(e) =>
-                  setEditformdata({
-                    ...editformData,
+                  setFdata({
+                    ...fData,
                     error: false,
                     success: false,
-                    pEditImages: [...e.target.files],
+                    pImage: [...e.target.files],
                   })
                 }
                 type="file"
@@ -235,10 +217,10 @@ const EditCompanyModal = (props) => {
               <div className="w-1/2 flex flex-col space-y-1">
                 <label htmlFor="status">Product Status *</label>
                 <select
-                  value={editformData.pStatus}
+                  value={fData.pStatus}
                   onChange={(e) =>
-                    setEditformdata({
-                      ...editformData,
+                    setFdata({
+                      ...fData,
                       error: false,
                       success: false,
                       pStatus: e.target.value,
@@ -259,9 +241,10 @@ const EditCompanyModal = (props) => {
               <div className="w-1/2 flex flex-col space-y-1">
                 <label htmlFor="status">Product Category *</label>
                 <select
+                  value={fData.pCategory}
                   onChange={(e) =>
-                    setEditformdata({
-                      ...editformData,
+                    setFdata({
+                      ...fData,
                       error: false,
                       success: false,
                       pCategory: e.target.value,
@@ -274,30 +257,12 @@ const EditCompanyModal = (props) => {
                   <option disabled value="">
                     Select a category
                   </option>
-                  {categories && categories.length > 0
-                    ? categories.map((elem) => {
+                  {categories.length > 0
+                    ? categories.map(function (elem) {
                         return (
-                          <Fragment key={elem._id}>
-                            {editformData.pCategory._id &&
-                            editformData.pCategory._id === elem._id ? (
-                              <option
-                                name="status"
-                                value={elem._id}
-                                key={elem._id}
-                                selected
-                              >
-                                {elem.cName}
-                              </option>
-                            ) : (
-                              <option
-                                name="status"
-                                value={elem._id}
-                                key={elem._id}
-                              >
-                                {elem.cName}
-                              </option>
-                            )}
-                          </Fragment>
+                          <option name="status" value={elem._id} key={elem._id}>
+                            {elem.cName}
+                          </option>
                         );
                       })
                     : ""}
@@ -308,10 +273,10 @@ const EditCompanyModal = (props) => {
               <div className="w-1/2 flex flex-col space-y-1">
                 <label htmlFor="quantity">Product in Stock *</label>
                 <input
-                  value={editformData.pQuantity}
+                  value={fData.pQuantity}
                   onChange={(e) =>
-                    setEditformdata({
-                      ...editformData,
+                    setFdata({
+                      ...fData,
                       error: false,
                       success: false,
                       pQuantity: e.target.value,
@@ -325,10 +290,10 @@ const EditCompanyModal = (props) => {
               <div className="w-1/2 flex flex-col space-y-1">
                 <label htmlFor="offer">Product Offfer (%) *</label>
                 <input
-                  value={editformData.pOffer}
+                  value={fData.pOffer}
                   onChange={(e) =>
-                    setEditformdata({
-                      ...editformData,
+                    setFdata({
+                      ...fData,
                       error: false,
                       success: false,
                       pOffer: e.target.value,
@@ -346,7 +311,7 @@ const EditCompanyModal = (props) => {
                 type="submit"
                 className="rounded-full bg-gray-800 text-gray-100 text-lg font-medium py-2"
               >
-                Update product
+                Create product
               </button>
             </div>
           </form>
@@ -356,4 +321,25 @@ const EditCompanyModal = (props) => {
   );
 };
 
-export default EditCompanyModal;
+const AddProductModal = (props) => {
+  useEffect(() => {
+    fetchCategoryData();
+  }, []);
+
+  const [allCat, setAllCat] = useState({});
+
+  const fetchCategoryData = async () => {
+    let responseData = await getAllCategory();
+    if (responseData.Categories) {
+      setAllCat(responseData.Categories);
+    }
+  };
+
+  return (
+    <Fragment>
+      <AddProductDetail categories={allCat} />
+    </Fragment>
+  );
+};
+
+export default AddProductModal;

@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from "react";
 import { CategoryContext } from "./index";
-import AddCategoryModal from "./AddClientModal";
-import EditCategoryModal from "./EditClientModal";
+import AddCategoryModal from "./AddCategoryModal";
+import EditCategoryModal from "./EditCategoryModal";
 
 const CategoryMenu = (props) => {
   const { dispatch } = useContext(CategoryContext);
