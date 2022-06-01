@@ -15,7 +15,7 @@ import { searchProducts } from "../../redux/features/productSlice";
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = useState(false);
   const [navbar, setNavbar] = useState();
-  const [search, setSearch] = useState();  
+  const [search, setSearch] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const { user } = useSelector((state) => ({ ...state.auth }));
@@ -67,7 +67,7 @@ const Navbar = () => {
          </div>
          <form onSubmit={handleSubmit}>
          <div className={search ? 'gpt3__input' : 'gpt3__input hidesearch'}>
-            <input className="input1" type="text" placeholder="Search" 
+            <input className="input1" type="text" placeholder="Search"
             onChange={(e) => setSearch(e.target.value)}/>
             <button className="btn" type="button">Search</button>
          </div>
@@ -90,14 +90,14 @@ const Navbar = () => {
             }
          </div>
        </div>
-       {user 
+       {user
        ? (<div className="gpt3__navbar-menu_container-links-sign"
-       onClick={() => setOpenDropdown(true)}>
+       onClick={() => setOpenDropdown(!openDropdown)}>
            <img src={noAvatar} alt=""
-            className="profileImg" 
+            className="profileImg"
             />
             {openDropdown && <Dropdown />}
-           <span className="barOnline"></span> 
+           <span className="barOnline"></span>
          </div> )
          :
          (<div className={navbar ? 'gpt3__navbar-signs' : 'gpt3__navbar-sign'}>

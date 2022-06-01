@@ -19,39 +19,34 @@ const Dropdown = () => {
       <div className="menu">
       <ul>
         <li>
-          <img src={userimg} >
+          <img src={userimg} />
           <a href='/profile'>
              Profile
           </a>
-          </img>
         </li> 
         <li>
-          <img src={envelope}>
+          <img src={envelope}/>
           <a href='/profile'>
              My Company
           </a>
-          </img>
         </li> 
         <li>
-          <img src={heart}>
+          <img src={heart}/>
           <a href='/profile'>
              MyWishList
           </a>
-          </img>
         </li> 
         <li>
-        <img src={settings}>
+        <img src={settings}/>
           <a href='/profile'>
              settings
           </a>
-          </img>
         </li>
         <li>
-        <img src={logout}>
+        <img src={logout}/>
           <a href='/' onClick={()=>handleLogout()}>
              logout
           </a>
-          </img>
         </li>
       </ul>
     </div>
