@@ -11,7 +11,7 @@ const companySchema = new Schema ({
     pay:{type: String,required: true},
     companyPicture:{type: String,required: true},
     userId:[{ type: Schema.Types.ObjectId,ref:'User',required:true}],
-    RatingsReviews: [{review: String,user:{type:ObjectId,ref:"users"},
+    RatingsReviews: [{review: String,user:{type: Schema.Types.ObjectId,ref:"users"},
     rating: String,createdAt: {type: Date,default: Date.now(),},},],
 },
 )

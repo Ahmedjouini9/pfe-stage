@@ -183,6 +183,95 @@ likeProduct : async (req, res) => {
 } catch (error) {
     res.status(404).json({ message: error.message });
 }
-}
+},
+getWishProduct:async(req, res) =>{
+    let { productArray } = req.body;
+    if (!productArray) {
+      return res.json({ error: "All filled must be required" });
+    } else {
+      try {
+        let wishProducts = await productModel.find({
+          _id: { $in: productArray },
+        });
+        if (wishProducts) {
+          return res.json({ Products: wishProducts });
+        }
+      } catch (err) {
+        return res.json({ error: "Filter product wrong" });
+      }
+    }
+  },
+  postAddReview: async(req, res) =>{
+    let { pId, uId, rating, review } = req.body;
+    if (!pId || !rating || !review || !uId) {
+      return res.json({ error: "All filled must be required" });
+    } else {
+      let checkReviewRatingExists = await productModel.findOne({ _id: pId });
+      if (checkReviewRatingExists.pRatingsReviews.length > 0) {
+        checkReviewRatingExists.pRatingsReviews.map((item) => {
+          if (item.user === uId) {
+            return res.json({ error: "Your already reviewd the product" });
+          } else {
+            try {
+              let newRatingReview = productModel.findByIdAndUpdate(pId, {
+                $push: {
+                  pRatingsReviews: {
+                    review: review,
+                    user: uId,
+                    rating: rating,
+                  },
+                },
+              });
+              newRatingReview.exec((err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                return res.json({ success: "Thanks for your review" });
+              });
+            } catch (err) {
+              return res.json({ error: "Cart product wrong" });
+            }
+          }
+        });
+      } else {
+        try {
+          let newRatingReview = productModel.findByIdAndUpdate(pId, {
+            $push: {
+              pRatingsReviews: { review: review, user: uId, rating: rating },
+            },
+          });
+          newRatingReview.exec((err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            return res.json({ success: "Thanks for your review" });
+          });
+        } catch (err) {
+          return res.json({ error: "Cart product wrong" });
+        }
+      }
+    }
+  },
+
+  deleteReview:async(req, res)=> {
+    let { rId, pId } = req.body;
+    if (!rId) {
+      return res.json({ message: "All filled must be required" });
+    } else {
+      try {
+        let reviewDelete = productModel.findByIdAndUpdate(pId, {
+          $pull: { pRatingsReviews: { _id: rId } },
+        });
+        reviewDelete.exec((err, result) => {
+          if (err) {
+            console.log(err);
+          }
+          return res.json({ success: "Your review is deleted" });
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  },
 };
 module.exports = ProductCntrl

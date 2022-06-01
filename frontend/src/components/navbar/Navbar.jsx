@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import decode from "jwt-decode";
 import { setLogout } from "../../redux/features/authSlice";
 import Dropdown from '../dropdown/dropdown';
-import { searchCompanys } from "../../redux/features/companySlice";
+import { searchProducts } from "../../redux/features/productSlice";
 
 
 
@@ -34,7 +34,7 @@ const Navbar = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (search) {
-      dispatch(searchCompanys(search));
+      dispatch(searchProducts(search));
       navigate(`/company/search?searchQuery=${search}`);
       // setSearch("");
     } else {

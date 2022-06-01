@@ -43,9 +43,10 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.use("/user",require('./routes/usersRouter'))
-app.use("/product",require('./routes/companysRouter'))
+app.use("/product",require('./routes/productRouter'))
 app.use("/conversation", require('./routes/conversationRouter'));
 app.use("/message", require('./routes/messageRouter'));
+// app.use("/payement", require('./routes/payementRouter'));
 
 
 //Real Time Chat!!
@@ -93,5 +94,8 @@ const getUser = (userId) => {
           io.emit("getUsers", users);
         });
       });
+
+      // VideoCall Chat
+      
 
 app.listen(process.env.PORT || 5000,()=>console.log(`server is running on port ${process.env.PORT}`));

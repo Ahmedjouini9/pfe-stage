@@ -2,7 +2,7 @@ import React , {  useState }from 'react';
 import people from '../../assets/people.png';
 import rca from '../../assets/combiné.png';
 import './header.css';
-import { searchCompanys } from "../../redux/features/companySlice";
+import {searchProducts } from "../../redux/features/productSlice";
 import {useDispatch } from "react-redux";
 import {useNavigate} from 'react-router-dom';
 
@@ -16,7 +16,7 @@ const Header = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (search) {
-      dispatch(searchCompanys(search));
+      dispatch(searchProducts(search));
       navigate(`/company/search?searchQuery=${search}`);
       // setSearch("");
     } else {

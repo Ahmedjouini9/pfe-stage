@@ -6,8 +6,6 @@ const passport = require("passport");
 const GOOGLE_CLIENT_ID ="your id"
 const GOOGLE_CLIENT_SECRET = "your id"
 
-GITHUB_CLIENT_ID = "your id";
-GITHUB_CLIENT_SECRET = "your id";
 
 FACEBOOK_APP_ID = "your id";
 FACEBOOK_APP_SECRET = "your id";

@@ -3,9 +3,8 @@ import { setLogout } from "../../redux/features/authSlice";
 import {useDispatch} from "react-redux";
 import './dropdown.css'
 import userimg from '../../assets/user.png'
-import edit from '../../assets/edit.png'
 import settings from '../../assets/settings.png'
-import question from '../../assets/question.png'
+import heart from '../../assets/heart.png'
 import logout from '../../assets/log-out.png'
 import envelope from '../../assets/envelope.png'
 
@@ -34,9 +33,9 @@ const Dropdown = () => {
           </img>
         </li> 
         <li>
-          <img src={edit}>
+          <img src={heart}>
           <a href='/profile'>
-             edit Profile
+             MyWishList
           </a>
           </img>
         </li> 
@@ -44,13 +43,6 @@ const Dropdown = () => {
         <img src={settings}>
           <a href='/profile'>
              settings
-          </a>
-          </img>
-        </li> 
-        <li>
-        <img src={question}>
-          <a href='/'>
-             help
           </a>
           </img>
         </li>

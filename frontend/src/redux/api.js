@@ -25,25 +25,27 @@ export const updatePassword = (UserData,id) => API.get(`/user/updatePassword/${i
 // export const googleSignIn = (result) => API.post("/users/googleSignIn", result);
 // export const facebookSignIn = (result) => API.post("/users/facebookSignIn", result);
 
- export const createCompany = (CompanyData) => API.post("/company", CompanyData);
- export const getCompanys = (page) => API.get(`/company?page=${page}`);
- export const getCompany = (id) => API.get(`/company/${id}`);
- export const deleteCompany = (id) => API.delete(`/company/${id}`);
- export const updateCompany = (updateCompanyData, id) =>
-   API.patch(`/company/${id}`, updateCompanyData);
- export const getCompanysByUser = (userId) => API.get(`/company/userCompanys/${userId}`);
+ export const createProduct = (ProductData) => API.post("/product", ProductData);
+ export const getProducts = (page) => API.get(`/product?page=${page}`);
+ export const getProduct = (id) => API.get(`/product/${id}`);
+ export const deleteProduct = (id) => API.delete(`/product/${id}`);
+ export const updateProduct = (updateProductData, id) =>
+   API.patch(`/Product/${id}`, updateProductData);
+ export const getProductsByUser = (userId) => API.get(`/product/userProducts/${userId}`);
 
 
- export const getCompanysBySearch = (searchQuery) =>
-   API.get(`/company/search?searchQuery=${searchQuery}`);
+ export const getProductsBySearch = (searchQuery) =>
+   API.get(`/product/search?searchQuery=${searchQuery}`);
 
-  export const getCompanyBySearchDomaine = (searchQuery) =>
-   API.get(`/company/searchdomaines?searchQuery=${searchQuery}`);
+  export const getProductBySearchDomaine = (searchQuery) =>
+   API.get(`/product/searchdomaines?searchQuery=${searchQuery}`);
 
-  export const getCompanyBySearchPay = (searchQuery) =>
-   API.get(`/company/searchpays?searchQuery=${searchQuery}`);
+  export const getProductBySearchPay = (searchQuery) =>
+   API.get(`/product/searchpays?searchQuery=${searchQuery}`);
 
- export const getDomaineCompanys = (domaine) => API.get(`/company/domaine/${domaine}`);
- export const getPayCompanys = (pay) => API.get(`/company/pay/${pay}`);
- export const getRelatedCompanys = (tags) => API.post(`/company/relatedCompanys`, tags);
- export const likeCompany = (id) => API.patch(`/company/like/${id}`);
+ export const getDomaineProducts = (domaine) => API.get(`/product/domaine/${domaine}`);
+ export const getPayProducts = (pay) => API.get(`/product/pay/${pay}`);
+ export const getRelatedProducts = (tags) => API.post(`/product/relatedProducts`, tags);
+ export const likeProduct = (id) => API.patch(`/product/like/${id}`);
+ export const getWishProduct = (productArray) => API.patch(`/product/wish-product/`,productArray);
+
